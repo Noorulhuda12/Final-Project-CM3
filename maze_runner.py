@@ -1,26 +1,47 @@
-import os
-os.environ["PANDA3D_PREFER_SOFTWARE_RENDERER"] = "true"  # Force software renderer
-os.environ["DISPLAY"] = ":1"  # Use the virtual display
-os.environ["PANDA3D_NO_OPENGL"] = "1"  # Disable OpenGL to force the software renderer
+# Simple text-based Maze Runner for testing inside Codespaces
+maze = [
+    "#########",
+    "#   #   #",
+    "# # # # #",
+    "# #   # #",
+    "# ##### #",
+    "#       #",
+    "#########"
+]
 
-import os
-os.environ["PANDA3D_PREFER_SOFTWARE_RENDERER"] = "true"
-os.environ["DISPLAY"] = ":1"
-os.environ["PANDA3D_NO_OPENGL"] = "1"
-from ursina import *
+# Player starting position
+player_x, player_y = 1, 1
 
-# Initialize the game
-app = Ursina()
+# Function to print the maze
+def print_maze():
+    for y in range(len(maze)):
+        row = ""
+        for x in range(len(maze[y])):
+            if x == player_x and y == player_y:
+                row += "P"  # Player
+            else:
+                row += maze[y][x]
+        print(row)
+    print("\nUse WASD to move. Type 'quit' to exit.")
 
-# Create a basic floor
-ground = Entity(model='plane', texture='white_cube', scale=(10, 1, 10), collider='box')
+# Main loop for movement
+print_maze()
+while True:
+    move = input("Move (WASD): ").strip().lower()
+    if move == "quit":
+        break
 
-# Create walls for the maze
-wall1 = Entity(model='cube', color=color.red, scale=(1, 2, 4), position=(2, 1, 0), collider='box')
-wall2 = Entity(model='cube', color=color.blue, scale=(1, 2, 4), position=(-2, 1, 0), collider='box')
+    new_x, new_y = player_x, player_y
+    if move == "w":
+        new_y -= 1
+    elif move == "s":
+        new_y += 1
+    elif move == "a":
+        new_x -= 1
+    elif move == "d":
+        new_x += 1
 
-# Add a First-Person Controller
-player = FirstPersonController()
+    if maze[new_y][new_x] == " ":
+        player_x, player_y = new_x, new_y
 
-# Run the game
-app.run()
+    print_maze()
